@@ -29,17 +29,17 @@ function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-  const token = localStorage.getItem("@notes:token");
-  const user = localStorage.getItem("@notes:user");
+    const token = localStorage.getItem("@notes:token");
+    const user = localStorage.getItem("@notes:user");
 
-  if(token && user) {
-    api.defaults.headers.authorization = `Bearer ${token}`;
+    if(token && user) {
+      api.defaults.headers.authorization = `Bearer ${token}`;
 
-    setData ({
-      token,
-      user: JSON.parse(user)
-    });
-  }
+      setData ({
+        token,
+        user: JSON.parse(user)
+      });
+    }
   }, []);
 
   return (
