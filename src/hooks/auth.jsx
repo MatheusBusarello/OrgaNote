@@ -35,6 +35,24 @@ function AuthProvider({ children }) {
     setData({});
   }
 
+  async function updateProfile ({ user }) {
+    try {
+      await api.put("/users", user);
+
+      localStorage.setItem("@notes:user", JSON.stringify(user));
+
+      setData({ user, token: data.token });
+      alert("Updated profile!")
+
+    } catch (error) {
+      if (error.response) {
+        alert(error.response.data.message)
+      } else{
+        alert("It's not possible update the profile.")
+      }
+     } 
+  }
+
   useEffect(() => {
     const token = localStorage.getItem("@notes:token");
     const user = localStorage.getItem("@notes:user");
@@ -53,6 +71,7 @@ function AuthProvider({ children }) {
     <AuthContext.Provider value={{ 
       signIn, 
       signOut,
+      updateProfile,
       user: data.user
     }}
     >
