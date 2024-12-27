@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Header } from "../../components/Header";
@@ -10,6 +11,15 @@ import { Button } from "../../components/Button";
 import { Container, Form } from "./style";
 
 export function NewNote() {
+  const [links, setLinks] = useState([]);
+  const [newLink, setNewLink] = useState("");
+
+  function handleAddLink() {
+    setLinks( prevState => [...prevState, newLink]);
+    setNewLink("");
+
+  }
+
   return(
     <Container>
       <Header />
@@ -25,8 +35,22 @@ export function NewNote() {
           <TextArea placeholder="Annotation" />
 
           <Section title="Links">
-            <NoteItem value="https://google.com" />
-            <NoteItem isNew placeholder="New Link" />
+            {
+              links.map((link, index) => (
+                <NoteItem
+                  key={String(index)}
+                  value={link}
+                  onClick={() => {}} 
+                />  
+              ))
+            }
+            <NoteItem 
+              isNew 
+              placeholder="New Link"
+              value={newLink}
+              onChange={e => setNewLink(e.target.value)}
+              onClick={handleAddLink} 
+            />
           </Section>
 
           <Section title="Markers">
