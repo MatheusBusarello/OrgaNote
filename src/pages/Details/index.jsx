@@ -1,4 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Container, Links, Content } from './style'
+import { useParams, useNavigate } from 'react-router-dom'
+
+import { api } from '../../services/api'
 
 import { Tag } from '../../components/Tag'
 import { Button } from '../../components/Button'
@@ -7,47 +11,93 @@ import { Section } from '../../components/Section'
 import { ButtonText } from '../../components/ButtonText'
 
 export function Details() {
+  const [data, setData] = useState(null);
+
+  const params = useParams();
+  const navigate = useNavigate();
+
+  function handleBack() {
+    navigate(-1);  
+  }
+
+  async function handleRemove() {
+    const confirm = window.confirm("Do you really want to delete the note?")
+
+    if(confirm) {
+      await api.delete(`/notes/${params.id}`);
+      navigate(-1);
+    }
+  }
+
+  useEffect(() => {
+    async function fetchNote(){
+      const response = await api.get(`/notes/${params.id}`);
+      setData(response.data);
+    }
+
+    fetchNote();
+  }, []);
+
   return(
     <Container>
       <Header />
+      {
+        data &&
+        <main>
+          <Content>
 
-      <main>
-        <Content>
+        <ButtonText 
+          title="Delete note"
+          onClick={handleRemove}
+        />
 
-      <ButtonText title="Excluir Nota"/>
+        <h1>
+          {data.title}
+        </h1>
 
-      <h1>
-        React
-      </h1>
+        <p>
+          {data.description}
+        </p>
+        
+        {
+          data.links &&
+          <Section title="Links">
+            <Links>
+              {
+                data.links.map(link => (
+                  <li key={String(link.id)}>
+                    <a href={link.url} target="_blank">
+                      {link.url}
+                    </a>
+                  </li>
+                ))
+              }
+            </Links>
+          </Section>
+        }
 
-      <p>
-        React is a JavaScript library developed by Facebook used to create user interfaces UI. 
-        It allows the building of interactive and dynamic web applications using reusable components 
-        and the concept of state to manage changes in the interface without reloading the page. 
-        React uses the Virtual DOM, which makes updates faster, optimizing the application's performance.
-      </p>
+        {
+          data.tags &&
+          <Section title="Marcadores">
+            {
+              data.tags.map(tag => (
+                <Tag 
+                  key={String(tag.id)}
+                  title={tag.name} 
+                />
+              ))
+            }  
+          </Section>
+        }
+        
+        <Button 
+          title="Back" 
+          onClick={handleBack}
+        />
 
-      <Section title="Links">
-        <Links>
-          <li>
-            <a href="#">https://github.com/MatheusBusarello</a>
-          </li>
-
-          <li>
-            <a href="#">https://github.com/MatheusBusarello/bloco-notas</a>
-          </li>
-        </Links>
-      </Section>
-
-      <Section title="Marcadores">
-         <Tag title="express" /> 
-         <Tag title="Node" /> 
-      </Section>
-      
-      <Button title="Back"/>
-
-      </Content>
-      </main>
+        </Content>
+        </main>
+      }
     </Container>
   )
 }
