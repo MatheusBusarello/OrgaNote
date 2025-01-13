@@ -1,87 +1,84 @@
-import { useState } from "react";
-import { FiArrowLeft, FiUser, FiLock, FiMail, FiCamera } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react'
+import { FiArrowLeft, FiUser, FiMail, FiLock, FiCamera } from 'react-icons/fi'
+import { useNavigate } from 'react-router-dom'
 
 import { useAuth } from "../../hooks/auth.jsx";
 
 import {api} from "../../services/api.js"
 import avatarPlaceHolder from "../../assets/avatar_placeholder.svg"
 
-import { Input } from "../../components/Input"
-import { Button } from "../../components/Button"
+import { Input } from '../../components/Input'
+import { Button } from '../../components/Button'
 
 import { Container, Form, Avatar } from "./style";
 
 export function Profile() {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile } = useAuth()
 
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [passwordOld, setPasswordOld] = useState();
-  const [passwordNew, setPasswordNew] = useState();
+  const [name, setName] = useState(user.name)
+  const [email, setEmail] = useState(user.email)
+  const [passwordOld, setPasswordOld] = useState()//a senha fica vazia por segurança
+  const [passwordNew, setPasswordNew] = useState()
 
-  const avatarUrl = user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : avatarPlaceHolder;
+  const avatarUrl = user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : avatarPlaceHolder//busca a imagem do avatar no back-end
+  const [avatar, setAvatar] = useState(avatarUrl)
+  const [avatarFile, setAvatarFile] = useState(null)
 
-  const [avatar, setAvatar] = useState(avatarUrl);
-  const [avatarFile, setAvatarFile] = useState(null);
-
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   function handleBack() {
-    navigate(-1);
+    navigate(-1)
   }
-  
-  async function  handleUpdate() {
-    const updated = {
+
+  async function handleUpdate() {
+    const updated ={
       name,
       email,
       password: passwordNew,
-      old_password: passwordOld,
-    };
+      old_password: passwordOld
+    }
 
-    const userUpdated = Object.assign(user, updated);
+    const userUpdated = Object.assign(user, updated)
 
-    await updateProfile ({ user: userUpdated, avatarFile });
+    await updateProfile({ user: userUpdated, avatarFile }) //atualiza o perfil do usuário
   }
 
-  function handleChangeAvatar(event) {
-    const file = event.target.files[0];
-    setAvatarFile(file)
+  //evento de alteração do avatar
+function handleChangeAvatar(event) {
+  const file = event.target.files[0]
+  setAvatarFile(file)
 
-    const imagePreview = URL.createObjectURL(file);
-    setAvatar(imagePreview);
-  }
-  
+  const imagePreview = URL.createObjectURL(file)
+  setAvatar(imagePreview)
+}
+
   return (
     <Container>
       <header>
         <button type="button" onClick={handleBack}>
-          <FiArrowLeft size={24}/>
+          <FiArrowLeft size={24} />
         </button>
       </header>
 
       <Form>
         <Avatar>
-          <img 
-            src={avatar}
-            alt="User's picture" 
-          />
-
+          <img src={avatar} />
           <label htmlFor="avatar">
             <FiCamera />
-            <input 
-              id="avatar"
-              type="file"
+
+            <input
+              id='avatar' 
+              type="file" 
               onChange={handleChangeAvatar}
             />
           </label>
         </Avatar>
         <Input 
-          placeholder="Name"
+          placeholder="Nome"
           type="text"
           icon={FiUser}
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={e => setName(e.target.value)} //atualiza o estado
         />
 
         <Input 
@@ -89,26 +86,27 @@ export function Profile() {
           type="text"
           icon={FiMail}
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)} //atualiza o estado
+
         />
 
         <Input 
-          placeholder="Current password"
+          placeholder="Senha atual"
           type="password"
           icon={FiLock}
-          onChange={e => setPasswordOld(e.target.value)}
+          onChange={e => setPasswordOld(e.target.value)} //atualiza o estado
         />
 
         <Input 
-          placeholder="New password"
+          placeholder="Nova senha"
           type="password"
           icon={FiLock}
-          onChange={e => setPasswordNew(e.target.value)}
+          onChange={e => setPasswordNew(e.target.value)} //atualiza o estado
         />
 
-        <Button title="Save" onClick={handleUpdate} />
+        <Button title="Salvar" onClick={handleUpdate} />
+
       </Form>
-
     </Container>
-  );
+  )
 }
