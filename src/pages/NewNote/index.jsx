@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
-import { TextArea } from "../../components/Textarea";
+import { TextArea } from "../../components/TextArea";
 import { NoteItem } from "../../components/NoteItem";
 import { Section } from "../../components/Section";
 import { Button } from "../../components/Button";
