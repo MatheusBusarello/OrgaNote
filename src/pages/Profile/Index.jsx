@@ -13,72 +13,75 @@ import { Button } from '../../components/Button'
 import { Container, Form, Avatar } from "./style";
 
 export function Profile() {
-  const { user, updateProfile } = useAuth()
+  const { user, updateProfile } = useAuth();
 
-  const [name, setName] = useState(user.name)
-  const [email, setEmail] = useState(user.email)
-  const [passwordOld, setPasswordOld] = useState()//a senha fica vazia por segurança
-  const [passwordNew, setPasswordNew] = useState()
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [passwordOld, setPasswordOld] = useState();
+  const [passwordNew, setPasswordNew] = useState();
 
-  const avatarUrl = user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : avatarPlaceHolder//busca a imagem do avatar no back-end
-  const [avatar, setAvatar] = useState(avatarUrl)
-  const [avatarFile, setAvatarFile] = useState(null)
+  const avatarUrl = user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : avatarPlaceHolder;
 
-  const navigate = useNavigate()
+  const [avatar, setAvatar] = useState(avatarUrl);
+  const [avatarFile, setAvatarFile] = useState(null);
+
+  const navigate = useNavigate();
 
   function handleBack() {
-    navigate(-1)
+    navigate(-1);
   }
-
-  async function handleUpdate() {
-    const updated ={
+  
+  async function  handleUpdate() {
+    const updated = {
       name,
       email,
       password: passwordNew,
-      old_password: passwordOld
-    }
+      old_password: passwordOld,
+    };
 
-    const userUpdated = Object.assign(user, updated)
+    const userUpdated = Object.assign(user, updated);
 
-    await updateProfile({ user: userUpdated, avatarFile }) //atualiza o perfil do usuário
+    await updateProfile ({ user: userUpdated, avatarFile });
   }
 
-  //evento de alteração do avatar
-function handleChangeAvatar(event) {
-  const file = event.target.files[0]
-  setAvatarFile(file)
+  function handleChangeAvatar(event) {
+    const file = event.target.files[0];
+    setAvatarFile(file)
 
-  const imagePreview = URL.createObjectURL(file)
-  setAvatar(imagePreview)
-}
-
+    const imagePreview = URL.createObjectURL(file);
+    setAvatar(imagePreview);
+  }
+  
   return (
     <Container>
       <header>
         <button type="button" onClick={handleBack}>
-          <FiArrowLeft size={24} />
+          <FiArrowLeft size={24}/>
         </button>
       </header>
 
       <Form>
         <Avatar>
-          <img src={avatar} />
+          <img 
+            src={avatar}
+            alt="User's picture" 
+          />
+
           <label htmlFor="avatar">
             <FiCamera />
-
-            <input
-              id='avatar' 
-              type="file" 
+            <input 
+              id="avatar"
+              type="file"
               onChange={handleChangeAvatar}
             />
           </label>
         </Avatar>
         <Input 
-          placeholder="Nome"
+          placeholder="Name"
           type="text"
           icon={FiUser}
           value={name}
-          onChange={e => setName(e.target.value)} //atualiza o estado
+          onChange={e => setName(e.target.value)}
         />
 
         <Input 
@@ -86,27 +89,26 @@ function handleChangeAvatar(event) {
           type="text"
           icon={FiMail}
           value={email}
-          onChange={e => setEmail(e.target.value)} //atualiza o estado
-
+          onChange={e => setEmail(e.target.value)}
         />
 
         <Input 
-          placeholder="Senha atual"
+          placeholder="Current password"
           type="password"
           icon={FiLock}
-          onChange={e => setPasswordOld(e.target.value)} //atualiza o estado
+          onChange={e => setPasswordOld(e.target.value)}
         />
 
         <Input 
-          placeholder="Nova senha"
+          placeholder="New password"
           type="password"
           icon={FiLock}
-          onChange={e => setPasswordNew(e.target.value)} //atualiza o estado
+          onChange={e => setPasswordNew(e.target.value)}
         />
 
-        <Button title="Salvar" onClick={handleUpdate} />
-
+        <Button title="Save" onClick={handleUpdate} />
       </Form>
+
     </Container>
-  )
+  );
 }
